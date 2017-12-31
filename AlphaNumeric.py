@@ -1,11 +1,11 @@
 from enum import Enum
 
-
+#Testing
 # This enumeration class holds the template of what each letter should generally look like
 class AlphaNumeric(Enum):
     A = []
 
-    B = []
+    B = []    
 
     C = []
 
