@@ -28,7 +28,8 @@ def parseFile():
 
 def writeFile(image=Image.Image):
     # Write file
-    image.save(os.path.dirname(System.argv[1])+ "\\" + os.path.basename(os.path.splitext(System.argv[1])[0]) + "-output.png")
+    image.save(
+        os.path.dirname(System.argv[1]) + "\\" + os.path.basename(os.path.splitext(System.argv[1])[0]) + "-output.png")
 
 
 def createImage(arrayOfRGBs=list):
@@ -37,8 +38,29 @@ def createImage(arrayOfRGBs=list):
     return output
 
 
+# Returns a list of letters where each element is a Letter object
+def seperateLetters(arrayOfPixels=list(), xLength=int(), yLength=int()):
+    pixelListOfLetters = list()
+    # Clean values of all non-letter related pixels
+    for y in range(0, yLength, 1):
+        for x in range(0, xLength, 1):
+            if arrayOfPixels[y * xLength + x] > (100, 100, 100):
+                arrayOfPixels[y * xLength + x] = (255, 255, 255)
+            else:
+                arrayOfPixels[y * xLength + x] = (0, 0, 0)
+            print(arrayOfPixels[y * xLength + x], end='')
+        print("\n")
+
+
 def main():
-    outputImage = createImage(parseFile())
+    arrayOfPixels = parseFile()
+    outputImage = createImage(arrayOfPixels)
     writeFile(outputImage)
+    letters = seperateLetters(arrayOfPixels, 60, 30)
+    # finalWord = ''
+    # for letter in letters:
+    #     finalWord += letter.identify()
+    # print(finalWord)
+
 
 main()
