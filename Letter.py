@@ -1,3 +1,5 @@
+from numpy.core.test_rational import lcm
+
 from AlphaNumeric import AlphaNumeric as Pattern
 
 
@@ -12,6 +14,18 @@ class Letter():
     # Scales the size of the RGB list to the specified size of the incoming x and y parameters and returns the new list
     # Scales the incoming RGB list as well if there isn't an easy ratio to modify current letter RGB list
     def __scaleSize(self, __charValueToScale=list()):
+        __RGBListSizeX = len(self.__RGBListOfTuples[0])
+        __RGBListSizeY = len(self.__RGBListOfTuples)
+
+        __charValueToScaleSizeX = len(__charValueToScale[0])
+        __charValueToScaleSizeY = len(__charValueToScale)
+
+        # Scale length/x value first
+        totalXLength = lcm(__RGBListSizeX, __charValueToScaleSizeX)
+
+        # Scale height/y value next
+        totalYHeight = lcm(__RGBListSizeY, __charValueToScaleSizeY)
+
         return __charValueToScale, self.__RGBListOfTuples
 
     def identify(self):
