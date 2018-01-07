@@ -44,11 +44,14 @@ class Letter():
             fitness = 0
             for x in range(0, len(__scaledCharValue[0]), 1):
                 for y in range(0, len(__scaledCharValue), 1):
-                    # Implement some form of pixel comparison algorithm to determine if the template pixel position is similar to the newRGBlist pixel position
+                    # Implement some form of pixel comparison algorithm to determine if the template pixel position
+                    # is similar to the newRGBlist pixel position
                     if __scaledCurrRGBList[y][x] == __scaledCharValue[y][x]:
                         fitness += 1
 
-            if fitness < 40:  # if the overall match of the newRGBList is way off the current letter template, remove it from the possible combination list.
+            if fitness < 40:  # if the overall match of the newRGBList is way off the current letter template,
+                              # remove it from the possible combination list.
                 del charCombinations[charIndex]
 
         return charCombinations.popitem()
+

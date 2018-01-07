@@ -47,8 +47,8 @@ def seperateLetters(arrayOfPixels=list(), xLength=int(), yLength=int()):
                 arrayOfPixels[y * xLength + x] = (255, 255, 255)
             else:
                 arrayOfPixels[y * xLength + x] = (0, 0, 0)
-            print(arrayOfPixels[y * xLength + x], end='')
-        print("\n")
+            print(arrayOfPixels[y * xLength + x], end=',')
+        print()
 
 
 def main():
