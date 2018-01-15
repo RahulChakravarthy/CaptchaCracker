@@ -1,0 +1,2 @@
+class Captcha:
+    pass

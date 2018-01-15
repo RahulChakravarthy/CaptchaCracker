@@ -3,8 +3,8 @@ from numpy.core.test_rational import lcm
 from AlphaNumeric import AlphaNumeric as Pattern
 
 
-class Letter():
-    __RGBListOfTuples = list()
+class Letter:
+    __RGBListOfTuples = list(list())
     __dimension = tuple()
 
     def __init__(self, RGBlistOfTuples=list, dimension=tuple):
