@@ -5,7 +5,7 @@ from AlphaNumeric import AlphaNumeric as Pattern
 
 class Letter:
     __RGBListOfTuples = list(list())
-    __dimension = tuple()
+    __dimension = tuple()   # (X width, Y height)
 
     def __init__(self, RGBlistOfTuples=list, dimension=tuple):
         self.__RGBListOfTuples = RGBlistOfTuples
@@ -14,8 +14,8 @@ class Letter:
     # Scales the size of the RGB list to the specified size of the incoming x and y parameters and returns the new list
     # Scales the incoming RGB list as well if there isn't an easy ratio to modify current letter RGB list
     def __scaleSize(self, __charValueToScale=list()):
-        __RGBListSizeX = len(self.__RGBListOfTuples[0])
-        __RGBListSizeY = len(self.__RGBListOfTuples)
+        __RGBListSizeX = self.__dimension[0]
+        __RGBListSizeY = self.__dimension[1]
 
         __charValueToScaleSizeX = len(__charValueToScale[0])
         __charValueToScaleSizeY = len(__charValueToScale)
@@ -38,7 +38,7 @@ class Letter:
                           Pattern.THREE, Pattern.FOUR, Pattern.FIVE, Pattern.SIX, Pattern.SEVEN, Pattern.EIGHT,
                           Pattern.NINE]
         charCombinations = dict(zip(characterList, characterValue))
-
+        charFitness = dict.fromkeys(characterList, 0)
         for charIndex, charValue in charCombinations.items():
             __scaledCharValue, __scaledCurrRGBList = self.__scaleSize(charValue)
             fitness = 0
@@ -49,9 +49,7 @@ class Letter:
                     if __scaledCurrRGBList[y][x] == __scaledCharValue[y][x]:
                         fitness += 1
 
-            if fitness < 40:  # if the overall match of the newRGBList is way off the current letter template,
-                              # remove it from the possible combination list.
-                del charCombinations[charIndex]
+            charFitness[charIndex] = fitness / (len(__scaledCharValue[0]) * len(__scaledCharValue)) # Scales the fitness based on size of entire captcha, to keep measurements accurate
 
-        return charCombinations.popitem()
+        return max(charFitness, key=lambda n: charFitness.get(n))
 

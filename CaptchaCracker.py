@@ -93,17 +93,22 @@ def separateLetters(twoDimensionArrayOfPixels=list(list())):
     # Separate the list of pixels into an iterable of letter objects
     listOfLetters = list()
 
+    global globeXLength, globeYLength
     # Remove top and bottem whitespace from pixel array
-    for y in range(0, globeYLength):
-        pass
-    for y in range(globeYLength - 1, 0):
-        pass
+    while len(set(twoDimensionArrayOfPixels[0][:])) is 1:
+        del twoDimensionArrayOfPixels[0][:]
+        globeYLength -= 1
+    while len(set(twoDimensionArrayOfPixels[-1][:])) is 1:
+        del twoDimensionArrayOfPixels[-1][:]
+        globeYLength -= 1
 
     # Remove left and right white space
-    for x in range(0, globeXLength):
-        pass
-    for x in range(globeXLength - 1, 0):
-        pass
+    while len(set(twoDimensionArrayOfPixels[:][0])) is 1:
+        del twoDimensionArrayOfPixels[:][0]
+        globeXLength -= 1
+    while len(set(twoDimensionArrayOfPixels[:][-1])) is 1:
+        del twoDimensionArrayOfPixels[:][-1]
+        globeXLength -= 1
 
     # Iterate through all the columns, if a column that is completely whitespace is encountered, create a letter object
     # with the sub array of colour codes and append it to the letter list, remove white space columns until you reach a
@@ -122,12 +127,13 @@ def separateLetters(twoDimensionArrayOfPixels=list(list())):
             # Decrement xColumn iterator counter by 1 when we reach useful column since for loop will increment it again
             xColumnIterator -= 1
         else:
-            xStartLetterColumn += 1
+            # Do nothing
+            pass
     return listOfLetters
 
 
 def createImage(arrayOfRGBs=list(list())):
-    output = Image.new("RGB", (60, 30))
+    output = Image.new("RGB", (globeXLength, globeYLength))
     output.putdata(arrayOfRGBs)
     return output
 
