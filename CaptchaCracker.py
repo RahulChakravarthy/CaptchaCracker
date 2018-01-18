@@ -149,12 +149,11 @@ def main():
     oneDimensionArrayOfPixels, twoDimensionArrayOfPixels = cleanLetters(arrayOfPixels)
 
     outputImage = createImage(oneDimensionArrayOfPixels)
-    writeImage(
-        outputImage)  # Outputs the cleaned version of the Captcha with only the letter of interest (Used for testing and viewing purposes)
+    writeImage(outputImage)  # Outputs the cleaned version of the Captcha with only the letter of interest (Used for testing and viewing purposes)
 
     listOfLetters = separateLetters(twoDimensionArrayOfPixels)
     writeImage(createImage(arrayOfPixels))  # Output the cleaned captcha
-    finalWord = [letter.identify() for letter in listOfLetters]
+    finalWord = [letter.__identify() for letter in listOfLetters]
     print(''.join(finalWord))
 
 
