@@ -9,8 +9,8 @@ from Letter import Letter
 
 # Script Parameters defined globally
 globeImagePath = System.argv[1]  # Path to captcha image
-globeXLength = System.argv[2]  # Width of Captcha Image
-globeYLength = System.argv[3]  # Height of Captcha Image
+globeXLength = int(System.argv[2])  # Width of Captcha Image
+globeYLength = int(System.argv[3])  # Height of Captcha Image
 
 
 # Parses txt file path containing RGB list provided in the argument and returns array of (X,Y,Z) tuples corresponding to pixel
@@ -95,44 +95,48 @@ def separateLetters(twoDimensionArrayOfPixels=list(list())):
 
     global globeXLength, globeYLength
     # Remove top and bottem whitespace from pixel array
-    while len(set(twoDimensionArrayOfPixels[0][:])) is 1:
-        del twoDimensionArrayOfPixels[0][:]
-        globeYLength -= 1
-    while len(set(twoDimensionArrayOfPixels[-1][:])) is 1:
-        del twoDimensionArrayOfPixels[-1][:]
+    while set(twoDimensionArrayOfPixels[0][:]).__eq__({(255, 255, 255)}):
+        del twoDimensionArrayOfPixels[0]
         globeYLength -= 1
 
-    # Remove left and right white space
-    while len(set(twoDimensionArrayOfPixels[:][0])) is 1:
-        del twoDimensionArrayOfPixels[:][0]
+    while set(twoDimensionArrayOfPixels[-1][:]).__eq__({(255, 255, 255)}):
+        del twoDimensionArrayOfPixels[-1]
+        globeYLength -= 1
+
+    # Remove left and right white space FIX: Find a cleaner way of deleting columns in 2D arrays
+    while set([row[0] for row in twoDimensionArrayOfPixels]).__eq__({(255, 255, 255)}):
+        for row in twoDimensionArrayOfPixels:
+            del row[0]
         globeXLength -= 1
-    while len(set(twoDimensionArrayOfPixels[:][-1])) is 1:
-        del twoDimensionArrayOfPixels[:][-1]
+
+    while set([row[-1] for row in twoDimensionArrayOfPixels]).__eq__({(255, 255, 255)}):
+        for row in twoDimensionArrayOfPixels:
+            del row[len(row)-1]
         globeXLength -= 1
+
+
 
     # Iterate through all the columns, if a column that is completely whitespace is encountered, create a letter object
     # with the sub array of colour codes and append it to the letter list, remove white space columns until you reach a
     # column with no white space, then repeat, stop iterating once xColumnIterator = globeXLength
     xStartLetterColumn = 0
-    for xColumnIterator in range(0, globeXLength):
-        if len(set(twoDimensionArrayOfPixels[:][xColumnIterator])) is 1:  # Encountered whitespace column
-            listOfLetters.append(Letter(twoDimensionArrayOfPixels[:][xStartLetterColumn:xColumnIterator],
+    xColumnIterator = 0
+    while xColumnIterator < len(twoDimensionArrayOfPixels[0]): # Assuming the shape is uniform
+        if set([row[xColumnIterator] for row in twoDimensionArrayOfPixels]).__eq__({(255, 255, 255)}):  # Encountered whitespace column
+            listOfLetters.append(Letter([row[xStartLetterColumn:xColumnIterator] for row in twoDimensionArrayOfPixels],
                                         (xColumnIterator - xStartLetterColumn, globeYLength)))
             # Iterate past useless whitespace
+            xStartLetterColumn = xColumnIterator
             xColumnIterator += 1
-            while len(set(twoDimensionArrayOfPixels[:][xColumnIterator])) is 1:
+            while set([row[xColumnIterator] for row in twoDimensionArrayOfPixels]).__eq__({(255, 255, 255)}):
                 xColumnIterator += 1
                 xStartLetterColumn += 1
-
-            # Decrement xColumn iterator counter by 1 when we reach useful column since for loop will increment it again
-            xColumnIterator -= 1
-        else:
-            # Do nothing
-            pass
+            xColumnIterator += 1
+        xColumnIterator += 1
     return listOfLetters
 
 
-def createImage(arrayOfRGBs=list(list())):
+def createImage(arrayOfRGBs=list(tuple())):
     output = Image.new("RGB", (globeXLength, globeYLength))
     output.putdata(arrayOfRGBs)
     return output
@@ -152,9 +156,7 @@ def main():
     writeImage(outputImage)  # Outputs the cleaned version of the Captcha with only the letter of interest (Used for testing and viewing purposes)
 
     listOfLetters = separateLetters(twoDimensionArrayOfPixels)
-    writeImage(createImage(arrayOfPixels))  # Output the cleaned captcha
-    finalWord = [letter.__identify() for letter in listOfLetters]
+    finalWord = [letter.identify() for letter in listOfLetters]
     print(''.join(finalWord))
-
 
 main()

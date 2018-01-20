@@ -26,25 +26,25 @@ class Letter:
         totalXLength = lcm(__RGBListSizeX, __charValueToScaleSizeX)
 
         # Scale the current RGB list
-        for rowIndex, rowValue in __RGBListOfTuplesChange:
-            __RGBListOfTuplesChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(totalXLength/__RGBListSizeX)]
+        for rowIndex, rowValue in enumerate(__RGBListOfTuplesChange):
+            __RGBListOfTuplesChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalXLength/__RGBListSizeX))]
         # Scale the incoming charValue list
-        for rowIndex, rowValue in __charValueToScale:
-            __RGBListOfTuplesChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(totalXLength/__charValueToScaleSizeX)]
+        for rowIndex, rowValue in enumerate(__charValueToScale):
+            __RGBListOfTuplesChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalXLength/__charValueToScaleSizeX))]
 
         # Scale height/y value next
         totalYHeight = lcm(__RGBListSizeY, __charValueToScaleSizeY)
 
         # Scale the current RGB list
-        for columnIndex, columnValue in __RGBListOfTuplesChange:
-            __RGBListOfTuplesChange[:][columnIndex] = [rgbCode for rgbCode in columnValue for _ in range(totalYHeight / __RGBListSizeY)]
+        for columnIndex, columnValue in enumerate(__RGBListOfTuplesChange):
+            __RGBListOfTuplesChange[:][columnIndex] = [rgbCode for rgbCode in columnValue for _ in range(int(totalYHeight / __RGBListSizeY))]
         # Scale the incoming charValue list
-        for columnIndex, columnValue in __charValueToScale:
-            __RGBListOfTuplesChange[:][columnIndex] = [rgbCode for rgbCode in rowValue for _ in range(totalYHeight / __charValueToScaleSizeY)]
+        for columnIndex, columnValue in enumerate(__charValueToScale):
+            __RGBListOfTuplesChange[:][columnIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalYHeight / __charValueToScaleSizeY))]
 
         return __charValueToScale,__RGBListOfTuplesChange
 
-    def __identify(self):
+    def identify(self):
         characterList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
                          "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
         characterValue = [Pattern.A, Pattern.B, Pattern.C, Pattern.D, Pattern.E, Pattern.F, Pattern.G, Pattern.H,
