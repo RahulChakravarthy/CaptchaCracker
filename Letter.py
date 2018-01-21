@@ -4,45 +4,44 @@ from AlphaNumeric import AlphaNumeric as Pattern
 
 
 class Letter:
-    __RGBListOfTuples = list(list())
+    __RGBListOfTuples = list()
     __dimension = tuple()   # (X width, Y height)
 
-    def __init__(self, RGBlistOfTuples=list(list()), dimension=tuple()):
+    def __init__(self, RGBlistOfTuples=list(), dimension=tuple()):
         self.__RGBListOfTuples = RGBlistOfTuples
         self.__dimension = dimension
 
     # Scales the size of the RGB list to the specified size of the incoming x and y parameters and returns the new list
     # Scales the incoming RGB list as well if there isn't an easy ratio to modify current letter RGB list
-    def __scaleSize(self, __charValueToScale=list(list())):
-        __RGBListOfTuplesChange = self.__RGBListOfTuples # Don't want to modify the current object RGB list so make copy of it
+    def __scaleSize(self, __charValueToScale=list()):
+        __RGBListOfTuplesChange = self.__RGBListOfTuples.copy()  # Don't want to modify the current object RGB list so make copy of it
+        __charValueToScaleChange = __charValueToScale.copy()
 
         __RGBListSizeX = self.__dimension[0]
         __RGBListSizeY = self.__dimension[1]
 
-        __charValueToScaleSizeX = len(__charValueToScale[0])
-        __charValueToScaleSizeY = len(__charValueToScale)
+        __charValueToScaleSizeX = len(__charValueToScaleChange[0])
+        __charValueToScaleSizeY = len(__charValueToScaleChange)
 
         # Scale length/x value first
         totalXLength = lcm(__RGBListSizeX, __charValueToScaleSizeX)
 
-        # Scale the current RGB list
+        # Scale the current X RGB list
         for rowIndex, rowValue in enumerate(__RGBListOfTuplesChange):
             __RGBListOfTuplesChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalXLength/__RGBListSizeX))]
-        # Scale the incoming charValue list
-        for rowIndex, rowValue in enumerate(__charValueToScale):
-            __RGBListOfTuplesChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalXLength/__charValueToScaleSizeX))]
+        # Scale the incoming X charValue list
+        for rowIndex, rowValue in enumerate(__charValueToScaleChange):
+            __charValueToScaleChange[rowIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalXLength/__charValueToScaleSizeX))]
 
         # Scale height/y value next
         totalYHeight = lcm(__RGBListSizeY, __charValueToScaleSizeY)
 
-        # Scale the current RGB list
-        for columnIndex, columnValue in enumerate(__RGBListOfTuplesChange):
-            __RGBListOfTuplesChange[:][columnIndex] = [rgbCode for rgbCode in columnValue for _ in range(int(totalYHeight / __RGBListSizeY))]
-        # Scale the incoming charValue list
-        for columnIndex, columnValue in enumerate(__charValueToScale):
-            __RGBListOfTuplesChange[:][columnIndex] = [rgbCode for rgbCode in rowValue for _ in range(int(totalYHeight / __charValueToScaleSizeY))]
+        # Scale the current Y RGB list
+        __RGBListOfTuplesChange = [row for row in __RGBListOfTuplesChange for _ in range(int(totalYHeight/__RGBListSizeY))]
+        # Scale the incoming Y charValue list
+        __charValueToScaleChange = [row for row in __charValueToScaleChange for _ in range(int(totalYHeight/__charValueToScaleSizeY))]
 
-        return __charValueToScale,__RGBListOfTuplesChange
+        return __charValueToScaleChange,__RGBListOfTuplesChange
 
     def identify(self):
         characterList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
@@ -58,12 +57,11 @@ class Letter:
         for charIndex, charValue in charCombinations.items():
             __scaledCharValue, __scaledCurrRGBList = self.__scaleSize(charValue)
             fitness = 0
-            for x in range(0, len(__scaledCharValue[0]), 1):
-                for y in range(0, len(__scaledCharValue), 1):
-                    if __scaledCurrRGBList[y][x] is __scaledCharValue[y][x]:
+            for x in range(len(__scaledCharValue[0])):
+                for y in range(len(__scaledCharValue)):
+                    if __scaledCurrRGBList[y][x] == __scaledCharValue[y][x]:
                         fitness += 1
 
-            charFitness[charIndex] = fitness / (len(__scaledCharValue[0]) * len(__scaledCharValue)) # Scales the fitness based on size of entire captcha, to keep measurements accurate
+            charFitness[charIndex] = fitness / (len(__scaledCharValue[0]) * len(__scaledCharValue))  # Scales the fitness based on size of entire captcha, to keep measurements accurate
 
         return max(charFitness, key=lambda n: charFitness.get(n))
-
